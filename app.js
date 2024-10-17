@@ -45,6 +45,22 @@ app.post('/app/people', (req, res) => {
         return res.status(200).json({"status": true, "msg": "data successfully retrieved", "data": newPeople})
     }
 })
+app.put('/app/people/:id', (req, res) => {
+    const {id} = req.params
+    const {name} = req.body
+    const findPeople = people.find((person) => person.id === Number(id))
+    if (!findPeople) {
+        return res.status(200).json({"status": false, "msg": "invalid id", "data": {}})
+    } else {
+        const updatedPerson = people.map((findPeople) => {
+            if (findPeople.id === Number(id)) {
+                findPeople.name = name
+            }
+            return findPeople
+        })
+        return res.status(200).json({"status": true, "msg": "perosn updated successfully", "data": updatedPerson})
+    }
+})
 app.all('*', (req, res) => {
     res.status(404).json({"status": false, "msg": "invalid request", "data": []});
 })
