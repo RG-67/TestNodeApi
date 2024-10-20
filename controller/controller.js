@@ -1,7 +1,6 @@
-const router = require('express')
 const {products, people} = require('../data')
 
-var getAllProduct = (req, res) => {
+const getAllProduct = (req, res) => {
     const filteredProduct = products.map((products) => {
         const {name, description} = products
         return {name, description}
