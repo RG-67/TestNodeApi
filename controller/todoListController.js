@@ -26,9 +26,9 @@ const createNote = async (req, res) => {
 const getAllNotes = async(req, res) => {
     const notes = await note.find();
     if (notes !== null) {
-        res.status(200).send({status: true, msg: 'data successfully retrieved', data: []})   
+        res.status(200).send({status: true, msg: 'data successfully retrieved', data: notes})   
     } else {
-        res.status(200).send({status: false, msg: 'data not found', data: notes})
+        res.status(200).send({status: false, msg: 'data not found', data: []})
     }
 }
 
@@ -41,8 +41,41 @@ const getNoteByUserId = async(req, res) => {
     }
 }
 
+const updateNoteById = async(req, res) => {
+    try {
+        const {id: noteId} = req.params
+        const noteRes = await note.findOneAndUpdate({_id: noteId}, req.body, {
+            new: true,
+            runValidators: true
+        })
+        if (!noteRes) {
+            res.status(200).send({status: false, msg: 'data updation failed', data: {}})
+        } else {
+            res.status(200).send({status: true, msg: 'data updated successfully', data: noteRes})
+        }
+    } catch (error) {
+        res.status(200).send({status: false, msg: `data note found by this id - ${req.params.id}`, data: {}})
+    }
+}
+
+const deleteNote = async(req, res) => {
+    try {
+        const {id: noteId} = req.params
+        const deleteNote = await note.findOneAndDelete({_id: noteId})
+        if (!deleteNote) {
+            res.status(200).send({status: false, msg: 'data not deleted'})
+        } else {
+            res.status(200).send({status: true, msg: 'data deleted successfully'})
+        }
+    } catch (error) {
+        res.status(200).send({status: false, msg: `data note found by this id - ${req.params.id}`})
+    }
+}
+
 module.exports = {
     createNote,
     getAllNotes,
-    getNoteByUserId
+    getNoteByUserId,
+    updateNoteById,
+    deleteNote
 }
