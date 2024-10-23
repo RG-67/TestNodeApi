@@ -1,35 +1,25 @@
 const note = require('../models/note')
 
-// assert.equal(err.errors['note'].message, 'note should not empty')
-    // assert.equal(err.errors['userId'].message, 'user id should not empty or already exists')
-    // assert.equal(err.errors['date'].message, 'data should not empty')
-    // assert.equal(err.errors['time'].message, 'time should not empty')
+
 
 const createNote = async (req, res) => {
     try {
         const notes = await note.create(req.body)
         res.status(200).json({notes})   
     } catch (error) {
-        let noteErrMsg = "", userErrMsg = "", dateErrMsg = "", timeErrMsg = "";
+        console.log(error);
+        let errMsg = "";
         if (error.name === 'ValidationError') {
-            if (error.errors.note) {
-                noteErrMsg = error.errors.note.message
-            }   
-            if (error.errors.userId) {
-                userErrMsg = error.errors.userId.message
-            }
-            if (error.errors.date) {
-                dateErrMsg = error.errors.date.message
-            }
-            if (error.errors.time) {
-                timeErrMsg = error.errors.time.message
-            }
+            ['note', 'userId', 'date', 'time'].forEach(field => {
+                if (error.errors[field]) {
+                    errMsg = error.errors[field].message;
+                }
+            });
         }
         if (error.code === 11000 && error.keyValue.userId) {            
             res.status(200).send({status: false, userError: `${error.keyValue.userId} already exists`})
-        } else {
-            res.status(200).send({status: false, ErrorMsg: [{noteError: noteErrMsg}, {userError: userErrMsg}, {dateError: dateErrMsg}, {timeErrMsg: timeErrMsg}]})   
         }
+        res.status(200).send({status: false, ErrorMsg: errMsg})   
     }
 }
 
