@@ -1,8 +1,9 @@
 const connectDB = require('./db/db')
 const express = require('express')
 const app = express()
-const router = require('./routes/routes')
-const todolistRouter = require('./routes/todoListRoutes')
+// const router = require('./routes/routes')
+// const todolistRouter = require('./routes/todoListRoutes')
+const noteAppRouter = require('./routes/noteAppRoutes')
 require('dotenv').config()
 
 const port = 5000
@@ -10,7 +11,10 @@ const port = 5000
 // app.use('/app', router)
 
 // todolist
-app.use('/app/v1', todolistRouter)
+// app.use('/app/v1', todolistRouter)
+
+// noteApp
+app.use('/api/v1', noteAppRouter)
 
 const start = async() => {
     try {

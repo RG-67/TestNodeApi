@@ -21,5 +21,5 @@ const createNote = new mongoose.Schema({
 })
 
 
-module.exports = mongoose.model('notes', createNote)
+// module.exports = mongoose.model('notes', createNote)
 

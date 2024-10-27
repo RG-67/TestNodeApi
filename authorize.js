@@ -4,14 +4,15 @@ const authorize = (req, res, next) => {
     const projectAuthKey = process.env.TOKEN_KEY;
 
     if (!authKey || !authKey.startsWith('Bearer ')) {
-        return res.status(401).json({"status": false, "msg": "authentication token is required", "data": {}});
+        return res.status(401).json({"status": false, "msg": "Authentication token is required", "data": {}});
+    } else {
+        const token = authKey.split(' ')[1];
+        if(token !== projectAuthKey) {
+            return res.status(401).json({"status": false, "msg": "Invalid token", "data": {}});
+        } else {
+            next();
+        }
     }
-
-    const token = authKey.split(' ')[1];
-    if (token === projectAuthKey) {
-        next()
-    }
-
     // jsonToken.verify(token, projectAuthKey, (err, decoded) => {
     //     if (err) {
     //         console.log(err);
