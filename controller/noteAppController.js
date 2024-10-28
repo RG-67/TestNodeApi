@@ -5,11 +5,13 @@ const createUser = async (req, res) => {
     try {
         const {name, phoneNumber, emailId, password} = req.body;
         const userId = utils.generateUserId();
+        const hassPass = await utils.setPassword(password);
         const date = Number(utils.getDate());
         const time = utils.getTime();
-        const user = await users.create({userId, name, phoneNumber, emailId, password, date, time});
+        const user = await users.create({userId, name, phoneNumber, emailId, password: hassPass, date, time});
         return res.status(200).json({status: true, msg: 'User successfully created', data: user});
     } catch (error) {
+        console.log(error);
         let errMsg = '';
         if (error.name === 'ValidationError') {
             ['name', 'emaildId, password', 'date', 'time'].forEach(field => {

@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 function generateUserId() {
     const prefix = "US";
     const date = Date.now();
@@ -20,9 +22,25 @@ function getTime() {
     return `${hour}:${minute}`;
 }
 
+async function setPassword(plainText) {
+    const hassPass = await bcrypt.hash(plainText, 10);
+    return hassPass;
+}
+
+async function getPassword(plainText, storePass) {
+    const isMatch = await bcrypt.compare(plainText, storePass);
+    if (isMatch) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 
 module.exports = {
     generateUserId,
     getDate,
-    getTime
+    getTime,
+    setPassword,
+    getPassword
 }
