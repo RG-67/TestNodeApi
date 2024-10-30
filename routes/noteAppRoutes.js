@@ -7,7 +7,7 @@ const {createUser} = require('../controller/noteAppController')
 
 router.use(authorize, logger, express.json())
 
-router.route('/createNote').post(createUser)
+router.route('/createUser').post(createUser)
 
 
 module.exports = router
