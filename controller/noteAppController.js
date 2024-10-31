@@ -29,7 +29,27 @@ const createUser = async (req, res) => {
     }
 }
 
+const loginUser = async (req, res) => {
+    const {emailId, password} = req.body;
+    try {
+        const user = await users.findOne({emailId: emailId}).exec();
+        if (user) {
+            const pass = await utils.getPassword(password, user.password);
+            if (pass) {
+                return res.status(200).json({status: true, msg: 'Login successfully', data: user});
+            } else {
+                return res.status(404).json({status: false, msg: 'Invalid password', data: {}});
+            }
+        } else {
+            return res.status(404).json({status: false, msg: 'Invalid email id', data: {}});
+        }
+    } catch (error) {
+        return res.status(404).json({status: false, msg: error, data: {}})
+    }
+}
+
 
 module.exports = {
-    createUser
+    createUser,
+    loginUser
 }
