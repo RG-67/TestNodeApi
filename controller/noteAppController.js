@@ -36,7 +36,7 @@ const loginUser = async (req, res) => {
         if (user) {
             const pass = await utils.getPassword(password, user.password);
             if (pass) {
-                return res.status(200).json({status: true, msg: 'Login successfully', data: user});
+                return res.status(200).json({status: true, msg: 'Login successfully', data: {_id: user._id, userId: user.userId, name: user.name, phoneNumber: user.phoneNumber, emailId: user.emailId}});
             } else {
                 return res.status(404).json({status: false, msg: 'Invalid password', data: {}});
             }
