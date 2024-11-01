@@ -1,6 +1,8 @@
 const users = require('../models/user')
+const notes = require('../models/note')
 const utils = require('../utility/utils')
 
+// user api
 const createUser = async (req, res) => {
     try {
         const {name, phoneNumber, emailId, password} = req.body;
@@ -45,6 +47,28 @@ const loginUser = async (req, res) => {
         }
     } catch (error) {
         return res.status(404).json({status: false, msg: error, data: {}})
+    }
+}
+
+// note api
+const createNote = async (req, res) => {
+    try {
+        const {title, note, dbId, userId} = req.body;
+        const noteId = utils.generateNoteId();
+        const date = Number(utils.getDate());
+        const time = utils.getTime();
+        const noteCreate = await notes.create({noteId, title, note, dbId, userId, date, time});
+        return res.status(200).json({status: true, msg: 'Note created successfully', data: noteCreate});
+    } catch(error) {
+        let errMsg = '';
+        if (error.name === 'ValidationError') {
+            ['title', 'note', 'databaseId', 'userId', 'date', 'time'].forEach(field => {
+                if (error.errors[field]) {
+                    errMsg = error.errors[field].message;
+                }
+            })
+        }
+        return res.status(409).json({status: false, msg: errMsg, data: {}})
     }
 }
 

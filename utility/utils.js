@@ -7,6 +7,13 @@ function generateUserId() {
     return `${prefix}${date}${randomKey}`;
 }
 
+function generateNoteId() {
+    const prefix = "NT";
+    const date = Date.now();
+    const randomKey = Math.floor(Math.random() * 1000);
+    return `${prefix}${date}${randomKey}`;
+}
+
 function getDate() {
     const date = new Date();
     const year = date.getFullYear();
@@ -39,6 +46,7 @@ async function getPassword(plainText, storePass) {
 
 module.exports = {
     generateUserId,
+    generateNoteId,
     getDate,
     getTime,
     setPassword,
