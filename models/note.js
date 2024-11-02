@@ -30,7 +30,7 @@ const createNote = new mongoose.Schema({
         required: [true, 'time should not empty']
     }
 }, {
-    collation: 'note'
+    collection: 'note'
 })
 
 

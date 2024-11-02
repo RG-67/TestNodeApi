@@ -53,13 +53,14 @@ const loginUser = async (req, res) => {
 // note api
 const createNote = async (req, res) => {
     try {
-        const {title, note, dbId, userId} = req.body;
+        const {title, note, databaseUserId, userId} = req.body;
         const noteId = utils.generateNoteId();
         const date = Number(utils.getDate());
         const time = utils.getTime();
-        const noteCreate = await notes.create({noteId, title, note, dbId, userId, date, time});
+        const noteCreate = await notes.create({noteId, title, note, databaseUserId, userId, date, time});
         return res.status(200).json({status: true, msg: 'Note created successfully', data: noteCreate});
     } catch(error) {
+        console.log(error);
         let errMsg = '';
         if (error.name === 'ValidationError') {
             ['title', 'note', 'databaseId', 'userId', 'date', 'time'].forEach(field => {
@@ -68,12 +69,65 @@ const createNote = async (req, res) => {
                 }
             })
         }
-        return res.status(409).json({status: false, msg: errMsg, data: {}})
+        return res.status(409).json({status: false, msg: errMsg, data: {}});
+    }
+}
+
+const getNote = async (req, res) => {
+    try {
+        const {noteDatabaseId, noteId, databaseUserId, userId} = req.body;
+        const getUserNote = await notes.findOne({_id: noteDatabaseId, noteId: noteId, databaseUserId: databaseUserId, userId: userId}).exec();
+        if (getUserNote) {
+            res.status(200).json({status: true, msg: 'note retreived successfully', data: {noteDatabaseId: getUserNote._id, noteId: getUserNote.noteId, title: getUserNote.title, note: getUserNote.note, databaseUserId: getUserNote.databaseUserId, userId: getUserNote.userId}});
+        } else {
+            res.status(400).json({status: false, msg: 'note not found', data: {}});
+        }
+    } catch (error) {
+        res.status(400).json({status: false, msg: 'Invalid request', data: {}});   
+    }
+}
+
+const updateNote = async (req, res) => {
+    try {
+    const {noteDatabaseId, noteId, title, note, databaseUserId, userId} = req.body;
+    const date = Number(utils.getDate());
+    const time = utils.getTime();
+    const updateData = {title: title, note: note, date: date, time: time}
+    const updateNote = await notes.findOneAndUpdate({_id: noteDatabaseId, noteId: noteId, databaseUserId: databaseUserId, userId: userId}, updateData, {
+        new: true,
+        runValidators: true
+    });
+    if(updateNote) {
+        return res.status(200).json({status: true, msg: 'Note updated successfully', data: updateNote});
+    } else {
+        return res.status(400).json({status: false, msg: 'Note updation faliled', data: {}});
+    }   
+    } catch (error) {
+        return res.status(400).json({status: false, msg: 'Invalid request', data: {}});
+    }
+}
+
+const deleteNote = async (req, res) => {
+    try {
+        const {noteDatabaseId, noteId, databaseUserId, userId} = req.body;
+        const noteDelete = await notes.findOneAndDelete({_id: noteDatabaseId, noteId: noteId, databaseUserId: databaseUserId, userId: userId});
+        if (noteDelete) {
+            return res.status(200).json({status: true, msg: 'Note deleted successfully', data: {}});
+        } else {
+            return res.status(400).json({status: true, msg: 'Note deletion failed', data: {}});
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({status: true, msg: 'Invalid request', data: {}});
     }
 }
 
 
 module.exports = {
     createUser,
-    loginUser
+    getNote,
+    loginUser,
+    createNote,
+    updateNote,
+    deleteNote
 }
