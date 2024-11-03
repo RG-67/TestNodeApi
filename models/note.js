@@ -28,6 +28,10 @@ const createNote = new mongoose.Schema({
     time: {
         type: String,
         required: [true, 'time should not empty']
+    },
+    isDelete: {
+        type: Number,
+        default: 0
     }
 }, {
     collection: 'note'

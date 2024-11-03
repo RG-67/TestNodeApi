@@ -19,7 +19,7 @@ const createUser = async (req, res) => {
         if (error.name === 'ValidationError') {
             ['name', 'emaildId, password', 'date', 'time'].forEach(field => {
                 if (error.errors[field]) {
-                    errMsg = error.errors[field].message;   
+                    errMsg = error.errors[field].message;
                 }
             })
         }
@@ -87,6 +87,20 @@ const getNote = async (req, res) => {
     }
 }
 
+const getAllNotes = async (req, res) => {
+    try {
+        const {databaseUserId, userId} = req.body;
+        const findAllNotes = await notes.find({databaseUserId: databaseUserId, userId: userId}).exec();
+        if (findAllNotes && findAllNotes.length > 0) {
+            res.status(200).json({status: true, msg: 'Notes retreived successfully', data: findAllNotes});
+        } else {
+            res.status(400).json({status: false, msg: 'Invalid request', data: []});
+        }
+    } catch (error) {
+        res.status(500).json({status: false, msg: 'Server error', data: []});
+    }
+}
+
 const updateNote = async (req, res) => {
     try {
     const {noteDatabaseId, noteId, title, note, databaseUserId, userId} = req.body;
@@ -126,6 +140,7 @@ const deleteNote = async (req, res) => {
 module.exports = {
     createUser,
     getNote,
+    getAllNotes,
     loginUser,
     createNote,
     updateNote,
