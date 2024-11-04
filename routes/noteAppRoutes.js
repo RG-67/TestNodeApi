@@ -2,7 +2,7 @@ const logger = require('../logger')
 const authorize = require('../authorize')
 const express = require('express')
 const router = express.Router()
-const {createUser, loginUser, createNote, getNote, getAllNotes, updateNote, deleteNote} = require('../controller/noteAppController')
+const {createUser, loginUser, createNote, getNote, getAllNotes, updateNote, deleteNote, setBinNote, getBinNote, restoreNote} = require('../controller/noteAppController')
 
 
 router.use(authorize, logger, express.json())
@@ -14,6 +14,9 @@ router.route('/note/getNote').post(getNote)
 router.route('/note/getAllNotes').post(getAllNotes)
 router.route('/note/updateNote').patch(updateNote)
 router.route('/note/deleteNote').post(deleteNote)
+router.route('/note/setBinNote').patch(setBinNote)
+router.route('/note/getBinNote').post(getBinNote)
+router.route('/note/restoreNote').patch(restoreNote)
 
 
 module.exports = router

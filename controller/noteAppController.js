@@ -90,7 +90,7 @@ const getNote = async (req, res) => {
 const getAllNotes = async (req, res) => {
     try {
         const {databaseUserId, userId} = req.body;
-        const findAllNotes = await notes.find({databaseUserId: databaseUserId, userId: userId}).exec();
+        const findAllNotes = await notes.find({databaseUserId: databaseUserId, userId: userId, isDelete: 0}).exec();
         if (findAllNotes && findAllNotes.length > 0) {
             res.status(200).json({status: true, msg: 'Notes retreived successfully', data: findAllNotes});
         } else {
@@ -136,6 +136,54 @@ const deleteNote = async (req, res) => {
     }
 }
 
+const setBinNote = async (req, res) => {
+    try {
+        const {noteDatabaseId, noteId, databaseUserId, userId} = req.body;
+        const binNote = await notes.findOneAndUpdate({_id: noteDatabaseId, noteId: noteId, databaseUserId: databaseUserId, userId: userId}, {isDelete: 1}, {
+            new: true,
+            runValidators: true
+        });
+        if (binNote) {
+            res.status(200).json({status: true, msg: 'Note saved to bin', data: {}});
+        } else {
+            res.status(400).json({status: true, msg: 'Invalid credentials', data: {}});
+        }
+    } catch (error) {
+        res.status(400).json({status: true, msg: 'Invalid request', data: {}});
+    }
+}
+
+const getBinNote = async (req, res) => {
+    try {
+        const {databaseUserId, userId} = req.body;
+        const findAllNotes = await notes.find({databaseUserId: databaseUserId, userId: userId, isDelete: 1}).exec();
+        if (findAllNotes && findAllNotes.length > 0) {
+            res.status(200).json({status: true, msg: 'Notes retreived successfully', data: findAllNotes});
+        } else {
+            res.status(400).json({status: false, msg: 'Notes not found', data: []});
+        }
+    } catch (error) {
+        res.status(500).json({status: false, msg: 'Server error', data: []});
+    }
+}
+
+const restoreNote = async (req, res) => {
+    try {
+        const {noteDatabaseId, noteId, databaseUserId, userId} = req.body;
+        const binNote = await notes.findOneAndUpdate({_id: noteDatabaseId, noteId: noteId, databaseUserId: databaseUserId, userId: userId}, {isDelete: 0}, {
+            new: true,
+            runValidators: true
+        });
+        if (binNote) {
+            res.status(200).json({status: true, msg: 'Note successfully restored', data: {}});
+        } else {
+            res.status(400).json({status: true, msg: 'Invalid credentials', data: {}});
+        }
+    } catch (error) {
+        res.status(400).json({status: true, msg: 'Invalid request', data: {}});
+    }
+}
+
 
 module.exports = {
     createUser,
@@ -144,5 +192,8 @@ module.exports = {
     loginUser,
     createNote,
     updateNote,
-    deleteNote
+    deleteNote,
+    setBinNote,
+    getBinNote,
+    restoreNote
 }
