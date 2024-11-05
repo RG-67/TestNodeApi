@@ -94,7 +94,7 @@ const getAllNotes = async (req, res) => {
         if (findAllNotes && findAllNotes.length > 0) {
             res.status(200).json({status: true, msg: 'Notes retreived successfully', data: findAllNotes});
         } else {
-            res.status(400).json({status: false, msg: 'Invalid request', data: []});
+            res.status(400).json({status: false, msg: 'Notes not found', data: findAllNotes});
         }
     } catch (error) {
         res.status(500).json({status: false, msg: 'Server error', data: []});
