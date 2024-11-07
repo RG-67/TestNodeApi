@@ -1,3 +1,9 @@
+# node modules
 node_modules/
+# authorization keys
 .env
+# fcm service account key
+service_account_key/
+# fcm app token
+/utility/appCred.js
 # authorize.js
