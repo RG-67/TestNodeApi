@@ -1,6 +1,8 @@
 const users = require('../models/user')
 const notes = require('../models/note')
+const noteReminders = require('../models/noteReminder')
 const utils = require('../utility/utils')
+const { token } = require('../utility/appCred')
 
 // user api
 const createUser = async (req, res) => {
@@ -53,17 +55,21 @@ const loginUser = async (req, res) => {
 // note api
 const createNote = async (req, res) => {
     try {
-        const {title, note, databaseUserId, userId} = req.body;
+        const {title, note, databaseUserId, userId, reminderDateTime} = req.body;
+        // const {title, note, databaseUserId, userId} = req.body;
         const noteId = utils.generateNoteId();
         const date = Number(utils.getDate());
         const time = utils.getTime();
         const noteCreate = await notes.create({noteId, title, note, databaseUserId, userId, date, time});
+        if (noteCreate && reminderDateTime !== '') {
+            const noteReminderCreate = await noteReminders.create({userId, userDatabaseId: databaseUserId, noteId, noteDatabaseId: noteCreate._id, userToken: token, reminderDateTime, isSendNotification: 1});
+        }
         return res.status(200).json({status: true, msg: 'Note created successfully', data: noteCreate});
     } catch(error) {
         console.log(error);
         let errMsg = '';
         if (error.name === 'ValidationError') {
-            ['title', 'note', 'databaseId', 'userId', 'date', 'time'].forEach(field => {
+            ['title', 'note', 'databaseUserId', 'date', 'time', 'userId', 'userDatabaseId', 'noteId', 'noteDatabaseId', 'userToken', 'reminderDateTime'].forEach(field => {
                 if (error.errors[field]) {
                     errMsg = error.errors[field].message;
                 }

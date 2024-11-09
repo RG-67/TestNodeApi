@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+const nodeCron = require('node-corn');
 const serviceAccount = require('../service_account_key/serviceKey.json');
 const appCred = require('./appCred');
 
@@ -36,7 +37,7 @@ const userToken = appCred.token;
 const notificationTitle = "Hello World!!";
 const notificationBody = "Test message";
 
-const intervalID = setInterval(() => {
+/* const intervalID = setInterval(() => {
     const currentTime = new Date();
     console.log("Checking at:", currentTime);
 
@@ -53,6 +54,8 @@ const intervalID = setInterval(() => {
         console.log("All scheduled notifications have been sent. Stopping the scheduler.");
         clearInterval(intervalID);
     }
-}, 1000);
+}, 1000); */
+
+
 
 module.exports = { sendNotification };
