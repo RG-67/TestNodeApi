@@ -1,12 +1,11 @@
 const admin = require('firebase-admin');
-const nodeCron = require('node-corn');
 const serviceAccount = require('../service_account_key/serviceKey.json');
 const appCred = require('./appCred');
 
-let scheduleDateTime = [
+/* let scheduleDateTime = [
     new Date(new Date().getTime() + 60 * 1000),  // 1 minute from now
     new Date(new Date().getTime() + 2 * 60 * 1000) // 2 minutes from now
-]
+] */
 
 console.log("Starting notification scheduler...");
 
@@ -14,28 +13,35 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 
-function sendNotification(token, title, body) {
+/**
+ * @param {String} userToken
+ * @param {String} title
+ * @param {String} body
+ */
+
+async function sendNotification(userToken, title, body) {
     const message = {
         notification: {
             title: title,
             body: body
         },
-        token: token,
+        token: userToken,
         android: {
             priority: "high",
         },
     };
 
-    admin.messaging().send(message).then((response) => {
+    try {
+        const response = await admin.messaging().send(message);
         console.log("Successfully send notification", response);
-    }).catch((error) => {
+    } catch (error) {
         console.log("Error sending notification", error);
-    });
+    }
 }
 
-const userToken = appCred.token;
+/* const userToken = appCred.token;
 const notificationTitle = "Hello World!!";
-const notificationBody = "Test message";
+const notificationBody = "Test message"; */
 
 /* const intervalID = setInterval(() => {
     const currentTime = new Date();

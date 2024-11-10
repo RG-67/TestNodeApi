@@ -62,7 +62,8 @@ const createNote = async (req, res) => {
         const time = utils.getTime();
         const noteCreate = await notes.create({noteId, title, note, databaseUserId, userId, date, time});
         if (noteCreate && reminderDateTime !== '') {
-            const noteReminderCreate = await noteReminders.create({userId, userDatabaseId: databaseUserId, noteId, noteDatabaseId: noteCreate._id, userToken: token, reminderDateTime, isSendNotification: 1});
+            const noteReminderCreate = await noteReminders.create({userId, userDatabaseId: databaseUserId, noteId, noteDatabaseId: noteCreate._id, 
+                userToken: token, reminderDateTime, isSendNotification: 1});
         }
         return res.status(200).json({status: true, msg: 'Note created successfully', data: noteCreate});
     } catch(error) {
