@@ -56,6 +56,7 @@ const loginUser = async (req, res) => {
 const createNote = async (req, res) => {
     try {
         const {title, note, databaseUserId, userId, reminderDateTime} = req.body;
+        console.log(`reminderDateTime: ${reminderDateTime}`)
         // const {title, note, databaseUserId, userId} = req.body;
         const noteId = utils.generateNoteId();
         const date = Number(utils.getDate());
