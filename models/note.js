@@ -32,6 +32,10 @@ const createNote = new mongoose.Schema({
     isDelete: {
         type: Number,
         default: 0
+    },
+    isReminder: {
+        type: Number,
+        default: 0
     }
 }, {
     collection: 'note'

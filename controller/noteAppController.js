@@ -56,12 +56,13 @@ const loginUser = async (req, res) => {
 const createNote = async (req, res) => {
     try {
         const {title, note, databaseUserId, userId, reminderDateTime} = req.body;
+        const isReminder = reminderDateTime !== '' ? 1 : 0;
         console.log(`reminderDateTime: ${reminderDateTime}`)
         // const {title, note, databaseUserId, userId} = req.body;
         const noteId = utils.generateNoteId();
         const date = Number(utils.getDate());
         const time = utils.getTime();
-        const noteCreate = await notes.create({noteId, title, note, databaseUserId, userId, date, time});
+        const noteCreate = await notes.create({noteId, title, note, databaseUserId, userId, date, time, isReminder: isReminder});
         if (noteCreate && reminderDateTime !== '') {
             const noteReminderCreate = await noteReminders.create({userId, userDatabaseId: databaseUserId, noteId, noteDatabaseId: noteCreate._id, 
                 userToken: token, reminderDateTime, isSendNotification: 1});
@@ -98,7 +99,7 @@ const getNote = async (req, res) => {
 const getAllNotes = async (req, res) => {
     try {
         const {databaseUserId, userId} = req.body;
-        const findAllNotes = await notes.find({databaseUserId: databaseUserId, userId: userId, isDelete: 0}).exec();
+        const findAllNotes = await notes.find({databaseUserId: databaseUserId, userId: userId, isDelete: 0, isReminder: 0}).exec();
         if (findAllNotes && findAllNotes.length > 0) {
             res.status(200).json({status: true, msg: 'Notes retreived successfully', data: findAllNotes});
         } else {
