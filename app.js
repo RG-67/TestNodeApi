@@ -7,7 +7,7 @@ const noteAppRouter = require('./routes/noteAppRoutes')
 require('dotenv').config()
 // require('./utility/cronReminder')
 
-const port = 5000
+const port = 3000
 
 // app.use('/app', router)
 

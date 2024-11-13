@@ -193,6 +193,84 @@ const restoreNote = async (req, res) => {
     }
 }
 
+const getNoteReminder = async (req, res) => {
+    try {
+        const { databaseUserId, userId } = req.body;
+
+        notes.aggregate([
+            {
+                $match: {
+                    databaseUserId: databaseUserId,
+                    userId: userId,
+                    isReminder: 1
+                }
+            },
+            {
+                $lookup: {
+                    from: 'note_reminder',
+                    let: {
+                        userId: "$userId",
+                        databaseUserId: "$databaseUserId",
+                        noteDatabaseId: {$toString: "$_id"},
+                        noteId: "$noteId"
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$userId", "$$userId"] },
+                                        { $eq: ["$userDatabaseId", "$$databaseUserId"] },
+                                        { $eq: ["$noteDatabaseId", "$$noteDatabaseId"] },
+                                        { $eq: ["$noteId", "$$noteId"] }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: "reminderData"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$reminderData",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    noteId: 1,
+                    title: 1,
+                    note: 1,
+                    databaseUserId: 1,
+                    userId: 1,
+                    date: 1,
+                    time: 1,
+                    reminderDateTime: "$reminderData.reminderDateTime"
+                }
+            }
+        ])
+        .exec()
+        .then((result) => {
+            console.log(result);
+            if (result.length > 0) {
+                res.status(200).json({ status: true, msg: 'Note retrieved successfully', data: result });   
+            } else {
+                res.status(404).json({ status: true, msg: 'Note not found', data: [] });   
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(500).json({ status: false, msg: 'Error retrieving note reminders', error });
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ status: false, msg: 'Internal server error', error });
+    }
+};
+
+
 
 module.exports = {
     createUser,
@@ -204,5 +282,6 @@ module.exports = {
     deleteNote,
     setBinNote,
     getBinNote,
-    restoreNote
+    restoreNote,
+    getNoteReminder
 }
