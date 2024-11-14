@@ -253,7 +253,6 @@ const getNoteReminder = async (req, res) => {
         ])
         .exec()
         .then((result) => {
-            console.log(result);
             if (result.length > 0) {
                 res.status(200).json({ status: true, msg: 'Note retrieved successfully', data: result });   
             } else {

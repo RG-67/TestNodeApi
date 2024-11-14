@@ -5,9 +5,9 @@ const app = express()
 // const todolistRouter = require('./routes/todoListRoutes')
 const noteAppRouter = require('./routes/noteAppRoutes')
 require('dotenv').config()
-// require('./utility/cronReminder')
+require('./utility/cronReminder')
 
-const port = 3000
+const port = 5000
 
 // app.use('/app', router)
 
