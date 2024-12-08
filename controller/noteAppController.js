@@ -256,7 +256,7 @@ const getNoteReminder = async (req, res) => {
             if (result.length > 0) {
                 res.status(200).json({ status: true, msg: 'Note retrieved successfully', data: result });   
             } else {
-                res.status(404).json({ status: true, msg: 'Note not found', data: [] });   
+                res.status(404).json({ status: false, msg: 'Note not found', data: [] });   
             }
         })
         .catch((error) => {
