@@ -137,11 +137,11 @@ const deleteNote = async (req, res) => {
         if (noteDelete) {
             return res.status(200).json({status: true, msg: 'Note deleted successfully', data: {}});
         } else {
-            return res.status(400).json({status: true, msg: 'Note deletion failed', data: {}});
+            return res.status(400).json({status: false, msg: 'Note deletion failed', data: {}});
         }
     } catch (error) {
         console.log(error);
-        return res.status(400).json({status: true, msg: 'Invalid request', data: {}});
+        return res.status(400).json({status: false, msg: 'Invalid request', data: {}});
     }
 }
 
@@ -155,10 +155,10 @@ const setBinNote = async (req, res) => {
         if (binNote) {
             res.status(200).json({status: true, msg: 'Note saved to bin', data: {}});
         } else {
-            res.status(400).json({status: true, msg: 'Invalid credentials', data: {}});
+            res.status(400).json({status: false, msg: 'Invalid credentials', data: {}});
         }
     } catch (error) {
-        res.status(400).json({status: true, msg: 'Invalid request', data: {}});
+        res.status(400).json({status: false, msg: 'Invalid request', data: {}});
     }
 }
 
@@ -186,10 +186,10 @@ const restoreNote = async (req, res) => {
         if (binNote) {
             res.status(200).json({status: true, msg: 'Note successfully restored', data: {}});
         } else {
-            res.status(400).json({status: true, msg: 'Invalid credentials', data: {}});
+            res.status(400).json({status: false, msg: 'Invalid credentials', data: {}});
         }
     } catch (error) {
-        res.status(400).json({status: true, msg: 'Invalid request', data: {}});
+        res.status(400).json({status: false, msg: 'Invalid request', data: {}});
     }
 }
 
